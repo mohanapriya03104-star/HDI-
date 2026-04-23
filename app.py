@@ -1,6 +1,6 @@
 import streamlit as st
 import numpy as np
-import pickle
+import joblib
 
 # -------------------------------
 # PAGE CONFIG
@@ -8,12 +8,11 @@ import pickle
 st.set_page_config(page_title="HDI Predictor", layout="centered")
 
 # -------------------------------
-# LOAD MODEL
+# LOAD MODEL (SAFE METHOD)
 # -------------------------------
 @st.cache_resource
 def load_model():
-    with open("model.pkl", "rb") as f:
-        return pickle.load(f)
+    return joblib.load("model.pkl")
 
 model = load_model()
 
@@ -23,7 +22,7 @@ model = load_model()
 st.title("🌍 Human Development Index Predictor")
 st.markdown("### 📊 Decision Support Tool for Policy Analysis")
 
-st.write("Simulate how changes in **health, education, and income** impact a country's development.")
+st.write("Simulate how changes in **health, education, and income** impact development.")
 
 st.markdown("---")
 
@@ -50,47 +49,41 @@ if st.button("🔍 Predict HDI"):
     input_data = np.array([[life_exp, expected_school, mean_school, gni]])
     prediction = model.predict(input_data)[0]
 
-    # -------------------------------
     # RESULT
-    # -------------------------------
     st.subheader("📈 Prediction Result")
     st.success(f"Predicted HDI: **{round(prediction, 3)}**")
 
-    # Progress bar
+    # PROGRESS BAR
     st.progress(min(max(prediction, 0.0), 1.0))
 
-    # -------------------------------
-    # CATEGORY + POLICY INSIGHT
-    # -------------------------------
+    # CATEGORY + POLICY
     st.subheader("📊 Development Category")
 
     if prediction >= 0.8:
         st.success("🌟 Very High Human Development")
-        st.write("Policy Focus: Maintain growth through **innovation, sustainability, and advanced education systems**.")
+        st.write("Policy Focus: Innovation, sustainability, and advanced education.")
 
     elif prediction >= 0.7:
         st.info("📈 High Human Development")
-        st.write("Policy Focus: Improve **income equality and quality of education** to reach very high development.")
+        st.write("Policy Focus: Improve income equality and education quality.")
 
     elif prediction >= 0.55:
         st.warning("⚖️ Medium Human Development")
-        st.write("Policy Focus: Invest in **education access, healthcare infrastructure, and economic growth**.")
+        st.write("Policy Focus: Invest in education, healthcare, and economic growth.")
 
     else:
         st.error("⚠️ Low Human Development")
-        st.write("Policy Focus: Urgent investment in **basic health, primary education, and income generation**.")
+        st.write("Policy Focus: Focus on basic health, primary education, and income generation.")
 
-    # -------------------------------
-    # EXTRA BUSINESS INSIGHT
-    # -------------------------------
+    # BUSINESS INSIGHT
     st.markdown("### 🧠 Key Insight")
     st.write(
-        "HDI is strongly influenced by **education and income levels**. "
-        "Long-term investment in human capital can significantly improve development outcomes."
+        "Education and income are strong drivers of HDI. "
+        "Long-term human capital investment improves development outcomes."
     )
 
 # -------------------------------
 # FOOTER
 # -------------------------------
 st.markdown("---")
-st.caption("🎓 MBA ABA Project | HDI Prediction Model | Data Source: UNDP")
+st.caption("🎓 MBA ABA Project | HDI Prediction | UNDP Data")
