@@ -93,7 +93,6 @@ if st.button("🔍 Predict HDI"):
     })
 
     st.bar_chart(feature_data.set_index("Feature"))
-
     # -------------------------------
     # COMPARISON WITH IDEAL
     # -------------------------------
